@@ -26,7 +26,7 @@ const deleteStudent = (e, id)=> {
     .then((res) => {
       alert(res.data.message);
  
-      thisClicked.closet("tr").remove();
+      thisClicked.closest("tr").remove();
     })
     .catch(function (error) {
       if (error.response) {
@@ -70,7 +70,7 @@ return (
 {item.phone}
         </td>
         <td>
-<Link to={`/students/${item.id}/edit`} className="btn btn-success"></Link>
+<Link to={`/students/${item.id}/edit`} className="btn btn-success">Edit</Link>
         </td>
         <td>
 <button type="button" onClick={(e)=>deleteStudent(e,item.id)} className="btn btn-danger">Delete</button>

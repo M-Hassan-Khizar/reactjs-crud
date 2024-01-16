@@ -1,45 +1,36 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 function StudentEdit() {
-    let {id}= useParams();
- 
-  const [loading, setLoading] = useState(true);
-  const [InputErrorList, setInputErrorList] = useState({});
-  const [student, setStudent] = useState({});
+  let {id} = useParams();
   
-  useEffect(() => {
- 
-    axios.get(`http://127.0.0.1:8000/api/students/${id}/edit`).then(res => {
-console.log(res)
-setStudent(res.data.student);
-setLoading(false);
-    })
-    .catch(function (error) {
-        if (error.response) {
-         
-          if (error.response.status === 404) {
-            alert(error.response.data.message);
-            setLoading(false);
-          }
+  const [loading, setLoading] = useState(true);
+  const [InputErrorList, setInputErrorList] = useState({})
+  const [student, setStudent] = useState({})
+useEffect(() => {
+  axios
+  .get(`http://127.0.0.1:8000/api/students/${id}/edit`)
+  .then((res) => {
+   console.log(res)
+   setStudent(res.data.message);
+    setLoading(false);
+  })
+  .catch(function (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        alert(error.response.data.message);
+        setLoading(false);
+      }
 
-          if (error.response.status === 500) {
-            alert(error.response.data.errors);
-            setLoading(false);
-          }
-        }
-      });
-
- 
-}, [id]);
-
-
-
-
- 
-
-
+      if (error.response.status === 500) {
+        alert(error.response.data.errors);
+        setLoading(false);
+      }
+    }
+  });
+  
+}, [id])
 
   const handleInput = (e) => {
     e.persist();
@@ -57,10 +48,10 @@ setLoading(false);
       phone: student.phone,
       course: student.course,
     };
-    axios.put(`http://127.0.0.1:8000/api/students/${id}/edit`, data)
+    axios
+      .put(`http://127.0.0.1:8000/api/students/${id}/edit`, data)
       .then((res) => {
         alert(res.data.message);
-   
         setLoading(false);
       })
       .catch(function (error) {
@@ -69,6 +60,7 @@ setLoading(false);
             setInputErrorList(error.response.data.errors);
             setLoading(false);
           }
+
           if (error.response.status === 404) {
             alert(error.response.data.message);
             setLoading(false);
@@ -82,18 +74,18 @@ setLoading(false);
       });
   };
   if (loading) {
-    return <Loading />;
-  }
+    return ( <Loading />
+  
+    )}
 
-
-
-  if(Object.keys(student).length===0){
-return (
-    <div className="container">
+if (Object.keys(student).length === 0) {
+    return (
+      <div className="container">
         <h4>No such id</h4>
-    </div>
-)
+      </div>
+    );
   }
+
   return (
     <div>
       <div className="container mt-5">
@@ -157,10 +149,11 @@ return (
                     ></input>
                     <span className="text-danger">{InputErrorList.course}</span>
                   </div>
+         
 
                   <div className="mb-3">
                     <button type="submit" className="btn btn-primary">
-                     update Student
+                     Update Student
                     </button>
                   </div>
                 </form>
