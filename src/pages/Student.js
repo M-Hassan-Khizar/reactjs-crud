@@ -17,6 +17,33 @@ setLoading(false);
 
  
 }, [])
+const deleteStudent = (e, id)=> {
+    e.preventDefault();
+    const thisClicked = e.currentTarget;
+    thisClicked.innerText = "Deleteing...";
+
+    axios.delete(`http://127.0.0.1:8000/api/students/${id}/delete`)
+    .then((res) => {
+      alert(res.data.message);
+ 
+      thisClicked.closet("tr").remove();
+    })
+    .catch(function (error) {
+      if (error.response) {
+      
+        if (error.response.status === 404) {
+          alert(error.response.data.message);
+          setLoading(false);
+          thisClicked.innerText = "Delete";
+        }
+
+        if (error.response.status === 500) {
+          alert(error.response.data.errors);
+          
+        }
+      }
+    });
+};
 
 if(loading){
 return(
@@ -43,10 +70,10 @@ return (
 {item.phone}
         </td>
         <td>
-<Link to="/" className="btn btn-success"></Link>
+<Link to={`/students/${item.id}/edit`} className="btn btn-success"></Link>
         </td>
         <td>
-<button className="btn btn-danger"></button>
+<button type="button" onClick={(e)=>deleteStudent(e,item.id)} className="btn btn-danger">Delete</button>
         </td>
         
     </tr>

@@ -4,6 +4,7 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import StudentList from "../pages/Student.js";
 import StudentCreate from "../pages/StudentCreate.js";
+import StudentEdit from "../pages/StudentEdit.js";
 
 
 function MyRouter(){
@@ -16,6 +17,9 @@ return(
 
 <Route path="/students" element={<StudentList />} />
 <Route path="/students/create" element={<StudentCreate />} />
+
+<Route path="/students/:id/edit" element={<StudentEdit />} />
+
 
 </Routes>
 )

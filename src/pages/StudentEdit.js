@@ -1,24 +1,52 @@
 import axios from "axios";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import Loading from "../components/Loading";
-function StudentCreate() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+function StudentEdit() {
+    let {id}= useParams();
+ 
+  const [loading, setLoading] = useState(true);
   const [InputErrorList, setInputErrorList] = useState({});
-  const [student, setStudent] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    course: "",
-  });
+  const [student, setStudent] = useState({});
+  
+  useEffect(() => {
+ 
+    axios.get(`http://127.0.0.1:8000/api/students/${id}/edit`).then(res => {
+console.log(res)
+setStudent(res.data.student);
+setLoading(false);
+    })
+    .catch(function (error) {
+        if (error.response) {
+         
+          if (error.response.status === 404) {
+            alert(error.response.data.message);
+            setLoading(false);
+          }
+
+          if (error.response.status === 500) {
+            alert(error.response.data.errors);
+            setLoading(false);
+          }
+        }
+      });
+
+ 
+}, [id]);
+
+
+
+
+ 
+
+
 
   const handleInput = (e) => {
     e.persist();
     setStudent({ ...student, [e.target.name]: e.target.value });
   };
 
-  const saveStudent = (e) => {
+  const updateStudent = (e) => {
     e.preventDefault();
 
     setLoading(true);
@@ -29,17 +57,20 @@ function StudentCreate() {
       phone: student.phone,
       course: student.course,
     };
-    axios
-      .post(`http://127.0.0.1:8000/api/students`, data)
+    axios.put(`http://127.0.0.1:8000/api/students/${id}/edit`, data)
       .then((res) => {
         alert(res.data.message);
-        navigate('/students')
+   
         setLoading(false);
       })
       .catch(function (error) {
         if (error.response) {
           if (error.response.status === 422) {
             setInputErrorList(error.response.data.errors);
+            setLoading(false);
+          }
+          if (error.response.status === 404) {
+            alert(error.response.data.message);
             setLoading(false);
           }
 
@@ -53,6 +84,16 @@ function StudentCreate() {
   if (loading) {
     return <Loading />;
   }
+
+
+
+  if(Object.keys(student).length===0){
+return (
+    <div className="container">
+        <h4>No such id</h4>
+    </div>
+)
+  }
   return (
     <div>
       <div className="container mt-5">
@@ -61,14 +102,14 @@ function StudentCreate() {
             <div className="card">
               <div className="card-header">
                 <h4>
-                  Add Student
+                  Edit Student
                   <Link to="/students" className="btn btn-danger float-end">
                     Back
                   </Link>
                 </h4>
               </div>
               <div className="card-body">
-                <form onSubmit={saveStudent}>
+                <form onSubmit={updateStudent}>
                   <div className="mb-3">
                     <label>Name</label>
                     <input
@@ -116,11 +157,10 @@ function StudentCreate() {
                     ></input>
                     <span className="text-danger">{InputErrorList.course}</span>
                   </div>
-         
 
                   <div className="mb-3">
                     <button type="submit" className="btn btn-primary">
-                      Save Student
+                     update Student
                     </button>
                   </div>
                 </form>
@@ -132,4 +172,4 @@ function StudentCreate() {
     </div>
   );
 }
-export default StudentCreate;
+export default StudentEdit;
